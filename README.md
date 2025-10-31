@@ -22,8 +22,9 @@ VentilacionI/
 
 ## Publicación
 
-1. Inicializa git y primer commit.
-2. Crea un repositorio en GitHub.
-3. Agrega el remoto y sube `main`.
+Este sitio se publica automáticamente con GitHub Pages.
+
+- Sitio en vivo: https://vancorr.github.io/VentilacionI/
+- Cada push a `main` dispara el workflow `.github/workflows/pages.yml`.
 
 > Este repositorio no requiere backend ni build; son páginas HTML estáticas.
