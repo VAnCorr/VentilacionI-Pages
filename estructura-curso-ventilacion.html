@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación Curso Ventilación Mecánica I</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .main-container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        nav {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #2a5298;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        nav a:hover {
+            background: #2a5298;
+            color: white;
+        }
+        h1, h2, h3, h4 {
+            color: #2a5298;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h4 {
+            border-bottom: none;
+            margin-top: 15px;
+            color: #1e3c72;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 600;
+            font-size: 2em;
+            border-bottom: 3px solid #2a5298;
+        }
+        .section {
+            margin-bottom: 35px;
+            padding: 28px;
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .teoria-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: space-around;
+        }
+        .parcial-column {
+            flex: 1;
+            min-width: 300px;
+            max-width: 480px;
+            border: 2px solid #2a5298;
+            padding: 22px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .parcial-column:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(42, 82, 152, 0.15);
+        }
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: flex-start;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        .description, .chart-wrapper {
+            flex: 1;
+            min-width: 300px;
+            max-width: 480px;
+        }
+        .chart-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .description ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .description > ul > li {
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: #e8f4f8;
+            border-radius: 8px;
+            border-left: 5px solid #2a5298;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.2s;
+        }
+        .description > ul > li:hover {
+            background-color: #d4e9f7;
+        }
+        .description .sub-item-list {
+            list-style-type: none;
+            padding-left: 20px;
+            margin-top: 12px;
+            font-size: 0.92em;
+            background-color: transparent;
+            border-left: none;
+        }
+        .description .sub-item-list li {
+            background-color: #f0f8ff;
+            border-left: 3px solid #198754;
+            margin-bottom: 8px;
+            padding: 8px 14px;
+            border-radius: 5px;
+        }
+        .description strong {
+            color: #1e3c72;
+        }
+        .percentage {
+            font-weight: 600;
+            color: #dc3545;
+            float: right;
+            background-color: #fff5f5;
+            padding: 4px 10px;
+            border-radius: 5px;
+            border: 1px solid #f5c6cb;
+        }
+        .sub-percentage {
+            font-weight: 600;
+            font-size: 0.9em;
+            color: #198754;
+            float: right;
+            background-color: #d4edda;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #c3e6cb;
+        }
+        .final-note {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-top: 35px;
+            padding: 25px;
+            background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 100%);
+            border: 2px solid #2a5298;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        .chart-wrapper canvas {
+            max-width: 100%;
+            height: auto;
+            max-height: 300px;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px;
+            }
+            .teoria-container, .chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .parcial-column, .description, .chart-wrapper {
+                width: 100%;
+                max-width: none;
+                margin-bottom: 25px;
+            }
+            .chart-wrapper canvas {
+                max-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <nav>
+        <a href="index.html">📚 Inicio</a>
+        <span>·</span>
+        <a href="cronograma-clases.html">📅 Cronograma</a>
+        <span>·</span>
+        <a href="actividades-docentes.html">👨‍🏫 Actividades</a>
+        <span>·</span>
+        <a href="evaluacion.html">📊 Evaluación</a>
+    </nav>
+
+    <h1>Sistema de Evaluación: Ventilación Mecánica I</h1>
+
+    <div class="section">
+        <h2>📝 Nota Teórica (Peso: 50% de la Nota Final)</h2>
+        <p style="text-align: center; font-size: 1.05em;">La Nota Teórica se calcula promediando dos evaluaciones parciales (50% cada una).</p>
+        <div class="teoria-container">
+
+            <div class="parcial-column">
+                <h3>Examen Parcial 1 (50% de Nota Teórica)</h3>
+                <div class="description">
+                    <ul>
+                        <li class="clearfix">
+                            <strong>Evaluación Acumulativa 1:</strong> <span class="percentage">70%</span>
+                            <ul class="sub-item-list">
+                                <li class="clearfix">Presentaciones de Clases <span class="sub-percentage">20%</span></li>
+                                <li class="clearfix">Revisión de Artículos (Viernes) <span class="sub-percentage">20%</span></li>
+                                <li class="clearfix">Participación Activa <span class="sub-percentage">15%</span></li>
+                                <li class="clearfix">Casos Clínicos UCI (Lunes) <span class="sub-percentage">15%</span></li>
+                            </ul>
+                        </li>
+                        <li class="clearfix"><strong>Examen Parcial 1 (2 dic):</strong> <span class="percentage">30%</span></li>
+                    </ul>
+                </div>
+                <div class="chart-wrapper">
+                    <h4 style="text-align: center;">Distribución Parcial 1</h4>
+                    <canvas id="parcial1Chart"></canvas>
+                </div>
+            </div>
+
+            <div class="parcial-column">
+                <h3>Examen Final (50% de Nota Teórica)</h3>
+                <div class="description">
+                    <ul>
+                        <li class="clearfix">
+                            <strong>Evaluación Acumulativa 2:</strong> <span class="percentage">70%</span>
+                            <ul class="sub-item-list">
+                                <li class="clearfix">Presentaciones de Clases <span class="sub-percentage">20%</span></li>
+                                <li class="clearfix">Revisión de Artículos (Viernes) <span class="sub-percentage">20%</span></li>
+                                <li class="clearfix">Participación Activa <span class="sub-percentage">15%</span></li>
+                                <li class="clearfix">Casos Clínicos UCI (Lunes) <span class="sub-percentage">15%</span></li>
+                            </ul>
+                        </li>
+                        <li class="clearfix"><strong>Examen Final (23 dic):</strong> <span class="percentage">30%</span></li>
+                    </ul>
+                </div>
+                <div class="chart-wrapper">
+                    <h4 style="text-align: center;">Distribución Examen Final</h4>
+                    <canvas id="parcial2Chart"></canvas>
+                </div>
+            </div>
+
+        </div>
+        <p style="text-align: center; margin-top: 20px; font-style: italic; font-weight: 500;">
+            Nota Teórica Final = (Parcial 1 × 0.50) + (Examen Final × 0.50)
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>🏥 Nota Práctica (Peso: 50% de la Nota Final)</h2>
+        <div class="chart-container">
+            <div class="description">
+                <h3>Componentes de Evaluación Práctica</h3>
+                <p>Evalúa el desempeño clínico y habilidades en manejo de ventilación mecánica:</p>
+                <ul>
+                    <li class="clearfix">
+                        <strong>Desempeño Clínico Diario:</strong>
+                        <span class="percentage">35%</span>
+                    </li>
+                    <li class="clearfix">
+                        <strong>Habilidades Procedurales:</strong>
+                        <span class="percentage">20%</span>
+                    </li>
+                    <li class="clearfix">
+                        <strong>Habilidades de Comunicación:</strong>
+                        <span class="percentage">15%</span>
+                    </li>
+                    <li class="clearfix">
+                        <strong>Profesionalismo:</strong>
+                        <span class="percentage">15%</span>
+                    </li>
+                    <li class="clearfix">
+                        <strong>Calidad de Registros Médicos:</strong>
+                        <span class="percentage">15%</span>
+                    </li>
+                </ul>
+                <small style="margin-top: 15px; display: block;">
+                    <strong>Nota:</strong> La evaluación práctica incluye manejo del ventilador, interpretación de curvas, 
+                    ajuste de parámetros y manejo de complicaciones.
+                </small>
+            </div>
+            <div class="chart-wrapper">
+                <h3>Distribución Gráfica (Práctica)</h3>
+                <canvas id="practicaChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="section final-note">
+        <h3>🎯 Cálculo de la Nota Final Global</h3>
+        <p style="margin-top: 15px;">Nota Final = (Nota Teórica Final × 0.50) + (Nota Práctica × 0.50)</p>
+        <p style="margin-top: 15px; font-size: 0.95em; font-weight: 400;">
+            Nota mínima aprobatoria: 70/100
+        </p>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const commonPieOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 15,
+                        padding: 12,
+                        font: {
+                            size: 13
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed !== null) { label += context.parsed + '%'; }
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        const pieData7030 = {
+            labels: ['Evaluación Acumulativa (70%)', 'Examen (30%)'],
+            datasets: [{
+                data: [70, 30],
+                backgroundColor: ['#2a5298', '#dc3545'],
+                borderColor: ['#2a5298', '#dc3545'],
+                borderWidth: 2
+            }]
+        };
+
+        const parcial1Ctx = document.getElementById('parcial1Chart');
+        if (parcial1Ctx) {
+            new Chart(parcial1Ctx.getContext('2d'), {
+                type: 'pie',
+                data: pieData7030,
+                options: commonPieOptions
+            });
+        }
+
+        const parcial2Ctx = document.getElementById('parcial2Chart');
+        if (parcial2Ctx) {
+            new Chart(parcial2Ctx.getContext('2d'), {
+                type: 'pie',
+                data: pieData7030,
+                options: commonPieOptions
+            });
+        }
+
+        const practicaCtx = document.getElementById('practicaChart');
+        if (practicaCtx) {
+            new Chart(practicaCtx.getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: [
+                        'Desempeño Clínico (35%)',
+                        'Habilidades Procedurales (20%)',
+                        'Comunicación (15%)',
+                        'Profesionalismo (15%)',
+                        'Registros Médicos (15%)'
+                    ],
+                    datasets: [{
+                        label: 'Distribución Nota Práctica',
+                        data: [35, 20, 15, 15, 15],
+                        backgroundColor: ['#198754', '#9b59b6', '#f39c12', '#3498db', '#e74c3c'],
+                        borderColor: ['#198754', '#9b59b6', '#f39c12', '#3498db', '#e74c3c'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 15,
+                                padding: 10,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed !== null) { label += context.parsed + '%'; }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    });
+</script>
+
+</body>
+</html>

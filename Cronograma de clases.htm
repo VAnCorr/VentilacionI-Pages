@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma - Ventilación Mecánica I</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-box {
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .stat-box .label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .filters {
+            padding: 20px;
+            background: #f8f9fa;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: #c82333;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .clase-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .clase-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .clase-card.examen {
+            border: 3px solid #dc3545;
+        }
+
+        .clase-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .clase-header.examen {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .clase-numero {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .clase-fecha-info {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .fecha-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.95em;
+        }
+
+        .dia-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .dia-badge.martes {
+            background: #28a745;
+        }
+
+        .dia-badge.jueves {
+            background: #17a2b8;
+        }
+
+        .examen-titulo {
+            width: 100%;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            padding: 30px;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .tutores-dia {
+            background: rgba(255,255,255,0.15);
+            padding: 12px 20px;
+            margin: 15px 20px 0 20px;
+            border-radius: 8px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tutor-dia-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .tutor-dia-badge.medico {
+            color: #2a5298;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .tutor-dia-badge.residente {
+            color: #28a745;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .temas-container {
+            padding: 20px;
+        }
+
+        .tema-item {
+            background: #f8f9fa;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #2a5298;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .tema-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .tema-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .tema-numero-badge {
+            display: inline-block;
+            background: #2a5298;
+            color: white;
+            padding: 5px 14px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .tema-tematica {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .tema-titulo {
+            font-size: 1.1em;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+
+            .clase-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .clase-fecha-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .tutores-dia {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .tutor-dia-badge {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Cronograma de Clases</h1>
+            <p>Ventilación Mecánica I - Noviembre-Diciembre 2025</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="number" id="totalDias">12</div>
+                <div class="label">Días de clase</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">25</div>
+                <div class="label">Temas totales</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">2</div>
+                <div class="label">Exámenes</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">4</div>
+                <div class="label">Temáticas</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="filterTematica">Filtrar por temática:</label>
+                <select id="filterTematica">
+                    <option value="all">Todas las temáticas</option>
+                    <option value="Temática I">Temática I: Fundamentos</option>
+                    <option value="Temática II">Temática II: Principios básicos</option>
+                    <option value="Temática III">Temática III: Optimización</option>
+                    <option value="Temática IV">Temática IV: Destete</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filterDia">Filtrar por día:</label>
+                <select id="filterDia">
+                    <option value="all">Todos los días</option>
+                    <option value="Tuesday">Martes</option>
+                    <option value="Thursday">Jueves</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="searchTema">Buscar tema:</label>
+                <input type="text" id="searchTema" placeholder="Escribe para buscar...">
+            </div>
+
+            <button class="reset-btn" onclick="resetFilters()">🔄 Limpiar filtros</button>
+        </div>
+
+        <div class="content" id="content"></div>
+    </div>
+
+    <script>
+        const clases = [
+            {dia: 1, fecha: "04/11/2025", diaName: "Tuesday", tutorMedico: "Dr. Gustavo Espinoza", tutorResidente: "Dr. Jorge Soza", temas: [
+                {numero: 1, tematica: "Temática I: Fundamentos de fisiología respiratoria", tema: "Mecánica pulmonar"},
+                {numero: 2, tematica: "Temática I: Fundamentos de fisiología respiratoria", tema: "Difusión y relación ventilación/perfusión"}
+            ]},
+            {dia: 2, fecha: "06/11/2025", diaName: "Thursday", tutorMedico: "Dr. Berman Mendoza", tutorResidente: "Dr. Yordan Arauz", temas: [
+                {numero: 3, tematica: "Temática I: Fundamentos de fisiología respiratoria", tema: "Regulación de la respiración"},
+                {numero: 4, tematica: "Temática I: Fundamentos de fisiología respiratoria", tema: "Intercambio y transporte de gases"}
+            ]},
+            {dia: 3, fecha: "11/11/2025", diaName: "Tuesday", tutorMedico: "Dr. Yader Altamirano", tutorResidente: "Dr. Alfredo Flores", temas: [
+                {numero: 5, tematica: "Temática I: Fundamentos de fisiología respiratoria", tema: "Circulación pulmonar"},
+                {numero: 6, tematica: "Temática I: Fundamentos de fisiología respiratoria", tema: "Interacción corazón-pulmón"}
+            ]},
+            {dia: 4, fecha: "13/11/2025", diaName: "Thursday", tutorMedico: "Dr. Denis Vanegas", tutorResidente: "Dra. Hellen Suazo", temas: [
+                {numero: 7, tematica: "Temática II: Principios básicos de ventilación", tema: "Funcionamiento de ventilador mecánico y clasificación de ventiladores"}
+            ]},
+            {dia: 5, fecha: "18/11/2025", diaName: "Tuesday", tutorMedico: "Dr. Mauricio Manzanarez", tutorResidente: "Dr. Jorge Soza", temas: [
+                {numero: 8, tematica: "Temática II: Principios básicos de ventilación", tema: "Circuito de ventilación, filtros y nebulizadores"},
+                {numero: 9, tematica: "Temática II: Principios básicos de ventilación", tema: "Taxonomía en ventilación"}
+            ]},
+            {dia: 6, fecha: "20/11/2025", diaName: "Thursday", tutorMedico: "Dr. Gustavo Espinoza", tutorResidente: "Dr. Yordan Arauz", temas: [
+                {numero: 10, tematica: "Temática II: Principios básicos de ventilación", tema: "Modos convencionales de ventilación I: ventilación controlada por presión"},
+                {numero: 11, tematica: "Temática II: Principios básicos de ventilación", tema: "Modos convencionales de ventilación I: ventilación controlada por volumen"}
+            ]},
+            {dia: 7, fecha: "25/11/2025", diaName: "Tuesday", tutorMedico: "Dr. Berman Mendoza", tutorResidente: "Dr. Alfredo Flores", temas: [
+                {numero: 12, tematica: "Temática II: Principios básicos de ventilación", tema: "Presión soporte y presión positiva continua de la vía aérea (CPAP)"},
+                {numero: 13, tematica: "Temática II: Principios básicos de ventilación", tema: "Escalares y bucles"}
+            ]},
+            {dia: 8, fecha: "27/11/2025", diaName: "Thursday", tutorMedico: "Dr. Yader Altamirano", tutorResidente: "Dra. Hellen Suazo", temas: [
+                {numero: 14, tematica: "Temática III: Optimización de ventilación", tema: "Configuración inicial del ventilador"},
+                {numero: 15, tematica: "Temática III: Optimización de ventilación", tema: "Asincronías y problemas con el ventilador"}
+            ]},
+            {dia: 9, fecha: "02/12/2025", diaName: "Tuesday", tipo: "examen", nombreExamen: "📝 Examen Parcial 1"},
+            {dia: 10, fecha: "04/12/2025", diaName: "Thursday", tutorMedico: "Dr. Denis Vanegas", tutorResidente: "Dr. Jorge Soza", temas: [
+                {numero: 16, tematica: "Temática III: Optimización de ventilación", tema: "Cómo mejorar ventilación, oxigenación y monitorización del paciente"},
+                {numero: 17, tematica: "Temática III: Optimización de ventilación", tema: "Humidificación y calentamiento de aire y manejo de secreciones del paciente durante la ventilación mecánica"}
+            ]},
+            {dia: 11, fecha: "09/12/2025", diaName: "Tuesday", tutorMedico: "Dr. Mauricio Manzanarez", tutorResidente: "Dr. Yordan Arauz", temas: [
+                {numero: 18, tematica: "Temática III: Optimización de ventilación", tema: "Cuidado y transporte del paciente intubado o con traqueostomía"},
+                {numero: 19, tematica: "Temática III: Optimización de ventilación", tema: "Complicaciones de la ventilación mecánica"}
+            ]},
+            {dia: 12, fecha: "11/12/2025", diaName: "Thursday", tutorMedico: "Dr. Gustavo Espinoza", tutorResidente: "Dr. Alfredo Flores", temas: [
+                {numero: 20, tematica: "Temática IV: Destete de ventilador y soporte ventilatorio no invasivo", tema: "Destete de ventilador: abordaje general"},
+                {numero: 21, tematica: "Temática IV: Destete de ventilador y soporte ventilatorio no invasivo", tema: "Extubación"}
+            ]},
+            {dia: 13, fecha: "16/12/2025", diaName: "Tuesday", tutorMedico: "Dr. Berman Mendoza", tutorResidente: "Dra. Hellen Suazo", temas: [
+                {numero: 22, tematica: "Temática IV: Destete de ventilador y soporte ventilatorio no invasivo", tema: "Ventilación no invasiva"},
+                {numero: 23, tematica: "Temática IV: Destete de ventilador y soporte ventilatorio no invasivo", tema: "Cánula nasal de alto flujo y otras formas de oxigenoterapia"}
+            ]},
+            {dia: 14, fecha: "18/12/2025", diaName: "Thursday", tutorMedico: "Dr. Yader Altamirano", tutorResidente: "Dr. Jorge Soza", temas: [
+                {numero: 24, tematica: "Temática IV: Destete de ventilador y soporte ventilatorio no invasivo", tema: "Fracaso de extubación"},
+                {numero: 25, tematica: "Temática IV: Destete de ventilador y soporte ventilatorio no invasivo", tema: "Destete difícil"}
+            ]},
+            {dia: 15, fecha: "23/12/2025", diaName: "Tuesday", tipo: "examen", nombreExamen: "📝 Examen Final"}
+        ];
+
+        function getDiaEspanol(diaIngles) {
+            return diaIngles === "Tuesday" ? "Martes" : "Jueves";
+        }
+
+        function renderClases(filteredClases = clases) {
+            const content = document.getElementById('content');
+            
+            if (filteredClases.length === 0) {
+                content.innerHTML = '<div class="no-results">No se encontraron clases con los filtros seleccionados</div>';
+                return;
+            }
+
+            let html = '';
+            let diasClaseCount = 0;
+
+            filteredClases.forEach(clase => {
+                const diaEspanol = getDiaEspanol(clase.diaName);
+                const diaClass = clase.diaName === "Tuesday" ? "martes" : "jueves";
+                const esExamen = clase.tipo === "examen";
+                
+                if (!esExamen) diasClaseCount++;
+
+                html += `
+                    <div class="clase-card ${esExamen ? 'examen' : ''}">
+                        <div class="clase-header ${esExamen ? 'examen' : ''}">
+                            <span class="clase-numero">Día ${clase.dia}</span>
+                            <div class="clase-fecha-info">
+                                <div class="fecha-badge">
+                                    📅 ${clase.fecha}
+                                </div>
+                                <span class="dia-badge ${diaClass}">${diaEspanol}</span>
+                            </div>
+                        </div>
+                `;
+
+                if (esExamen) {
+                    html += `
+                        <div class="examen-titulo">
+                            ${clase.nombreExamen}
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="tutores-dia">
+                            <div class="tutor-dia-badge medico">
+                                👨‍⚕️ ${clase.tutorMedico}
+                            </div>
+                            <div class="tutor-dia-badge residente">
+                                👨‍🎓 ${clase.tutorResidente}
+                            </div>
+                        </div>
+                        <div class="temas-container">
+                    `;
+                    
+                    clase.temas.forEach(tema => {
+                        html += `
+                            <div class="tema-item">
+                                <div class="tema-numero-badge">Tema ${tema.numero}</div>
+                                <div class="tema-tematica">${tema.tematica.split(':')[0]}</div>
+                                <div class="tema-titulo">${tema.tema}</div>
+                            </div>
+                        `;
+                    });
+
+                    html += '</div>';
+                }
+
+                html += '</div>';
+            });
+
+            content.innerHTML = html;
+            document.getElementById('totalDias').textContent = diasClaseCount;
+        }
+
+        function applyFilters() {
+            const tematicaFilter = document.getElementById('filterTematica').value;
+            const diaFilter = document.getElementById('filterDia').value;
+            const searchText = document.getElementById('searchTema').value.toLowerCase();
+
+            let filtered = clases.filter(clase => {
+                if (clase.tipo === "examen") return true;
+
+                const matchDia = diaFilter === 'all' || clase.diaName === diaFilter;
+                
+                const matchTematica = tematicaFilter === 'all' || 
+                    clase.temas.some(t => t.tematica.includes(tematicaFilter));
+                
+                const matchSearch = searchText === '' || 
+                    clase.temas.some(t => t.tema.toLowerCase().includes(searchText));
+                
+                return matchDia && matchTematica && matchSearch;
+            });
+
+            renderClases(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('filterTematica').value = 'all';
+            document.getElementById('filterDia').value = 'all';
+            document.getElementById('searchTema').value = '';
+            renderClases();
+        }
+
+        // Event listeners
+        document.getElementById('filterTematica').addEventListener('change', applyFilters);
+        document.getElementById('filterDia').addEventListener('change', applyFilters);
+        document.getElementById('searchTema').addEventListener('input', applyFilters);
+
+        // Render inicial
+        renderClases();
+    </script>
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actividades Docentes Noviembre-Diciembre 2025</title>
+
+  <!-- CDN de FullCalendar v6 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css">
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/locales/es.global.min.js'></script>
+
+  <!-- CDN para html2pdf.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #212529;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 30px;
+    }
+
+    .page-header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .page-header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+      margin-top: 10px;
+    }
+
+    .stats-container {
+      max-width: 1200px;
+      margin: 0 auto 30px auto;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      min-width: 180px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-number {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #2a5298;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.95em;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .stat-card.articulos .stat-number {
+      color: #198754;
+    }
+
+    .stat-card.casos .stat-number {
+      color: #ffc107;
+    }
+
+    .legend-container {
+      max-width: 1200px;
+      margin: 0 auto 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+
+    .legend-color {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .legend-color.articulo {
+      background-color: #198754;
+    }
+
+    .legend-color.caso {
+      background-color: #ffc107;
+    }
+
+    .resumen-residentes {
+      max-width: 1200px;
+      margin: 0 auto 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .resumen-residentes h3 {
+      text-align: center;
+      color: #2a5298;
+      margin-bottom: 20px;
+      font-size: 1.3em;
+    }
+
+    .resumen-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .resumen-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #2a5298;
+    }
+
+    .resumen-nombre {
+      font-weight: 600;
+      color: #2a5298;
+      margin-bottom: 8px;
+      font-size: 1.1em;
+    }
+
+    .resumen-detalle {
+      font-size: 0.9em;
+      color: #666;
+      margin: 3px 0;
+    }
+
+    #calendar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .fc {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .fc .fc-toolbar.fc-header-toolbar {
+      margin-bottom: 1.5em;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+
+    .fc .fc-toolbar-title {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: #2a5298;
+    }
+
+    .fc .fc-button-primary {
+      background-color: #2a5298;
+      border-color: #2a5298;
+      padding: 8px 16px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .fc .fc-button-primary:hover {
+      background-color: #1e3c72;
+      border-color: #1e3c72;
+      transform: translateY(-2px);
+    }
+
+    .fc .fc-button-primary:not(:disabled):active,
+    .fc .fc-button-primary:not(:disabled).fc-button-active {
+      background-color: #1e3c72;
+      border-color: #1e3c72;
+    }
+
+    .fc-daygrid-event {
+      white-space: normal !important;
+      overflow: visible !important;
+      align-items: start;
+      padding: 6px 8px;
+      font-size: 0.85em;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .fc-daygrid-event:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .fc-daygrid-day-frame {
+      min-height: 110px;
+    }
+
+    .fc-event.fc-event-articulo {
+      border: 2px solid #198754 !important;
+      color: white !important;
+      background: linear-gradient(135deg, #198754 0%, #146c43 100%) !important;
+    }
+
+    .fc-event.fc-event-caso {
+      border: 2px solid #ffc107 !important;
+      color: #333 !important;
+      background: linear-gradient(135deg, #ffc107 0%, #ffdb4d 100%) !important;
+    }
+
+    .fc .fc-daygrid-day.fc-day-today {
+      background-color: rgba(42, 82, 152, 0.1) !important;
+    }
+
+    .fc .fc-col-header-cell {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #2a5298;
+      padding: 12px 0;
+    }
+
+    #exportBtn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 5px 20px rgba(25, 135, 84, 0.4);
+      z-index: 1000;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #exportBtn:hover {
+      background: linear-gradient(135deg, #146c43 0%, #0f5132 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(25, 135, 84, 0.5);
+    }
+
+    #exportBtn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #exportBtn::before {
+      content: '📥';
+      font-size: 1.2em;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .page-header h1 {
+        font-size: 1.5em;
+      }
+
+      #calendar-container {
+        padding: 15px;
+      }
+
+      .stats-container {
+        flex-direction: column;
+      }
+
+      .stat-card {
+        width: 100%;
+      }
+
+      .resumen-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #exportBtn {
+        bottom: 15px;
+        right: 15px;
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      #exportBtn {
+        display: none !important;
+      }
+
+      .page-header {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <h1>📚 Actividades Docentes</h1>
+    <p>Revisión de Artículos y Casos Clínicos UCI</p>
+    <p>Noviembre - Diciembre 2025</p>
+  </header>
+
+  <div class="stats-container">
+    <div class="stat-card articulos">
+      <div class="stat-number">6</div>
+      <div class="stat-label">Revisiones de Artículos</div>
+    </div>
+    <div class="stat-card casos">
+      <div class="stat-number">4</div>
+      <div class="stat-label">Casos Clínicos UCI</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">10</div>
+      <div class="stat-label">Actividades Totales</div>
+    </div>
+  </div>
+
+  <div class="legend-container">
+    <div class="legend-item">
+      <div class="legend-color articulo"></div>
+      <span>📖 Revisión de Artículo (Viernes)</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color caso"></div>
+      <span>🏥 Caso Clínico UCI (Lunes)</span>
+    </div>
+  </div>
+
+  <div class="resumen-residentes">
+    <h3>📊 Distribución por Residente</h3>
+    <div class="resumen-grid">
+      <div class="resumen-item">
+        <div class="resumen-nombre">Arauz</div>
+        <div class="resumen-detalle">📖 Artículos: 2</div>
+        <div class="resumen-detalle">🏥 Casos: 1</div>
+        <div class="resumen-detalle"><strong>Total: 3</strong></div>
+      </div>
+      <div class="resumen-item">
+        <div class="resumen-nombre">Flores</div>
+        <div class="resumen-detalle">📖 Artículos: 2</div>
+        <div class="resumen-detalle">🏥 Casos: 1</div>
+        <div class="resumen-detalle"><strong>Total: 3</strong></div>
+      </div>
+      <div class="resumen-item">
+        <div class="resumen-nombre">Soza</div>
+        <div class="resumen-detalle">📖 Artículos: 1</div>
+        <div class="resumen-detalle">🏥 Casos: 1</div>
+        <div class="resumen-detalle"><strong>Total: 2</strong></div>
+      </div>
+      <div class="resumen-item">
+        <div class="resumen-nombre">Suazo</div>
+        <div class="resumen-detalle">📖 Artículos: 1</div>
+        <div class="resumen-detalle">🏥 Casos: 1</div>
+        <div class="resumen-detalle"><strong>Total: 2</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="calendar-container">
+    <div id="calendar"></div>
+  </div>
+
+  <button id="exportBtn">Exportar a PDF</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+      var exportButton = document.getElementById('exportBtn');
+
+      // Colores
+      const colorArticulo = '#198754', colorCasoUCI = '#ffc107';
+
+      // Feriados
+      const feriados = new Set([
+        '2025-12-07',
+        '2025-12-08',
+        '2025-12-24',
+        '2025-12-25',
+        '2025-12-31'
+      ]);
+
+      function pad(n){ return n < 10 ? '0'+n : ''+n; }
+      function yyyymmdd(d){ return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+
+      // Recopilar fechas disponibles
+      const fechasArticulos = [];
+      const fechasCasos = [];
+
+      const inicio = new Date('2025-11-07');
+      const fin = new Date('2025-12-22');
+
+      for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate()+1)) {
+        const day = d.getDay();
+        const fecha = yyyymmdd(d);
+        
+        if (day === 0 || day === 6) continue;
+        if (feriados.has(fecha)) continue;
+
+        if (day === 5) fechasArticulos.push(fecha);
+        if (day === 1) fechasCasos.push(fecha);
+      }
+
+      // ORDEN ESPECÍFICO DE ARTÍCULOS: Arauz, Flores, Soza, Suazo, Arauz, Flores
+      const ordenArticulos = ['Arauz', 'Flores', 'Soza', 'Suazo', 'Arauz', 'Flores'];
+      
+      // ORDEN ESPECÍFICO DE CASOS: Suazo, Soza, Arauz, Flores
+      const ordenCasos = ['Suazo', 'Soza', 'Arauz', 'Flores'];
+
+      const eventos = [];
+
+      // Crear eventos de artículos (6 totales)
+      for (let i = 0; i < Math.min(6, fechasArticulos.length); i++) {
+        const ponente = ordenArticulos[i];
+        eventos.push({ 
+          id: `art-${fechasArticulos[i]}`, 
+          title: `📖 Artículo: ${ponente}`, 
+          start: fechasArticulos[i], 
+          color: colorArticulo, 
+          classNames: ['fc-event-articulo'],
+          extendedProps: { ponente, tipo: 'articulo' }
+        });
+      }
+
+      // Crear eventos de casos (4 totales)
+      for (let i = 0; i < Math.min(4, fechasCasos.length); i++) {
+        const ponente = ordenCasos[i];
+        eventos.push({ 
+          id: `caso-${fechasCasos[i]}`, 
+          title: `🏥 Caso UCI: ${ponente}`, 
+          start: fechasCasos[i], 
+          color: colorCasoUCI, 
+          classNames: ['fc-event-caso'],
+          extendedProps: { ponente, tipo: 'caso' }
+        });
+      }
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        locale: 'es',
+        initialDate: '2025-11-01',
+        initialView: 'dayGridMonth',
+        weekends: true,
+        navLinks: true,
+        headerToolbar: {
+          start: 'prev,next today',
+          center: 'title',
+          end: 'dayGridMonth,listMonth'
+        },
+        buttonText: {
+          today: 'Hoy',
+          month: 'Mes',
+          list: 'Lista'
+        },
+        events: eventos,
+        height: 'auto',
+        contentHeight: 'auto',
+        eventDisplay: 'block',
+        dayMaxEvents: true,
+        eventClick: function(info) {
+          info.jsEvent.preventDefault();
+          const evento = info.event;
+          const storageKey = `comment-${evento.id}`;
+          const comentarioActual = localStorage.getItem(storageKey) || '';
+          const tituloOriginal = typeof evento.title === 'string' ? evento.title.replace(' 📌', '') : `Evento ID: ${evento.id}`;
+          const nuevoComentario = prompt(`💬 Agregar comentario para:\n${tituloOriginal}`, comentarioActual);
+          
+          if (nuevoComentario !== null) {
+            const comentarioLimpio = nuevoComentario.trim();
+            let tituloActualizado = tituloOriginal;
+            
+            if (comentarioLimpio === '') { 
+              localStorage.removeItem(storageKey); 
+            } else {
+              localStorage.setItem(storageKey, comentarioLimpio);
+              if (!tituloOriginal.includes(' 📌')) { 
+                tituloActualizado += ' 📌'; 
+              }
+            }
+            evento.setProp('title', tituloActualizado);
+          }
+        },
+        eventDidMount: function(info) {
+          const storageKey = `comment-${info.event.id}`;
+          const comentario = localStorage.getItem(storageKey);
+          if (comentario) {
+            const titulo = info.event.title;
+            if (!titulo.includes(' 📌')) {
+              info.event.setProp('title', titulo + ' 📌');
+            }
+          }
+        }
+      });
+
+      calendar.render();
+
+      if (exportButton) {
+        exportButton.addEventListener('click', function() {
+          exportButton.textContent = 'Exportando...';
+          exportButton.disabled = true;
+          
+          const element = document.body;
+          const opt = {
+            margin:       [10, 10, 10, 10],
+            filename:     'actividades-docentes-nov-dic-2025.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+              scale: 2, 
+              useCORS: true, 
+              letterRendering: true, 
+              scrollY: 0, 
+              windowWidth: document.documentElement.offsetWidth 
+            },
+            jsPDF:        { 
+              unit: 'mm', 
+              format: 'a4', 
+              orientation: 'landscape' 
+            }
+          };
+          
+          html2pdf().from(element).set(opt).save().then(() => {
+            exportButton.textContent = 'Exportar a PDF';
+            exportButton.disabled = false;
+          }).catch(err => {
+            console.error("Error durante la exportación a PDF:", err);
+            exportButton.textContent = 'Error al exportar';
+            setTimeout(() => {
+              exportButton.textContent = 'Exportar a PDF';
+            }, 3000);
+            exportButton.disabled = false;
+          });
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>

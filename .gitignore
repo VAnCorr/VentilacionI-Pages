@@ -1,0 +1,17 @@
+# System files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
+
+# VS Code
+.vscode/
+
+# Node/Build caches (not used now, but safe)
+node_modules/
+dist/
+build/
+
+# Temporary
+*.tmp
+*.bak
