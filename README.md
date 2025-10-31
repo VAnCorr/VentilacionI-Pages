@@ -24,7 +24,9 @@ VentilacionI/
 
 Este sitio se publica automáticamente con GitHub Pages.
 
-- Sitio en vivo: https://vancorr.github.io/VentilacionI/
+- Sitio en vivo (público): https://vancorr.github.io/VentilacionI-Pages/
+- Repositorio público Pages: https://github.com/VAnCorr/VentilacionI-Pages
+- Repositorio de trabajo (privado): https://github.com/VAnCorr/VentilacionI
 - Cada push a `main` dispara el workflow `.github/workflows/pages.yml`.
 
 > Este repositorio no requiere backend ni build; son páginas HTML estáticas.
